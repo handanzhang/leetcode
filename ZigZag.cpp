@@ -5,44 +5,48 @@
    A P L S I I G
    Y   I   R
 
-
 Input: s = "PAYPALISHIRING", numRows = 3
 Output: "PAHNAPLSIIGYIR"
+
+Input: s = "PAYPALISHIRING", numRows = 4
+Output: "PINALSIGYAHRPI"
+Explanation:
+
+P     I    N
+A   L S  I G
+Y A   H R
+P     I
+
  */
+
+//思路：生成n行字符串，按顺序遍历字符串，遇到row==0 或者row==rowNum-1，行序号反转，逐一添加到对应行的字符串
 
 #include <string>
 #include <iostream>
 
 using namespace std;
 
-void Test(string s, int numRows)
-{
-    string s1 = string(s.size(), 'c');
-    auto k = 0;
-    for(int i = 0; i < numRows; ++i)
-    {
-        for(auto j = i; j < s.size(); j+=numRows+1)
-        {
-            if (i == numRows / 2)
-            {
-                s1[k] = s[j];
-                if ((j+numRows - numRows / 2) < s.size())
-                    k += 1;
-                    s1[k] = s[j+numRows - numRows / 2];
-            }
-            else
-            {
-                s1[k] = s[j];
-            }
-            k += 1;
+string convert(string s, int numRows) {
+        if (numRows == 1) return s;
+
+        vector<string> rows(min(numRows, int(s.size())));
+        int curRow = 0;
+        bool goingDown = false;
+
+        for (char c : s) {
+            rows[curRow] += c;
+            if (curRow == 0 || curRow == numRows - 1) goingDown = !goingDown;
+            curRow += goingDown ? 1 : -1;
         }
 
+        string ret;
+        for (string row : rows) ret += row;
+        return ret;
+        
     }
-    std::cout << s1;
-}
 
 
 int main()
 {
-    Test("PAYPALISHIRING", 3);
+    cout << convert("PAYPALISHIRING", 3);
 }
