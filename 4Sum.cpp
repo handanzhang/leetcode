@@ -1,7 +1,6 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
-#include <map>
 using namespace std;
 
 class Solution{
@@ -10,42 +9,28 @@ class Solution{
         {
             sort(nums.begin(), nums.end());// 排序方便头尾相加
             vector<vector<int>> ret;
-            map<int, bool> findKey;
             for(int i = 0; i < nums.size(); ++i)
             {
                 if( i!= 0 && nums[i] == nums[i-1]) continue;
                 auto num = nums[i];
-                auto iter = nums.erase(nums.begin()+ i);
-                auto temp = Solution::threeSum(nums, target-num);
-                nums.insert(iter, num);
+                auto temp = Solution::threeSum(nums, i+1, target-num); //已经遍历过的num不应该计入可选数字内，所以开始的数字为i+1
                 for(auto& d :temp)
                 {
-                    bool insert = true;
-                    for(auto i : d)
-                        if(findKey.find(i) != findKey.end())
-                        {
-                            insert = false;
-                            break;
-                        }
-                    if(insert)
-                    {
-                        d.push_back(num);
-                        ret.push_back(d);
-                    }
+                    d.push_back(num);
+                    ret.push_back(d);
                 }
-                findKey[num] = true;
             }
             return ret;
         }
 
-        static vector<vector<int>> threeSum(vector<int>& nums, int target) {
+        static vector<vector<int>> threeSum(vector<int>& nums, int startIndex, int target) {
             vector<vector<int>> result;
                 if(nums.size() < 3){
                     return result;
                 }
 
-            for(int index = 0; index <= nums.size()-3; index++){
-                while(index > 0 && index <= nums.size()-3 && nums[index] == nums[index-1]){index++;} // 前后相等，就直接下一个，因为会重复，这个index 从第二个数开始
+            for(int index = startIndex; index <= nums.size()-3; index++){
+                while(index > startIndex && index <= nums.size()-3 && nums[index] == nums[index-1]){index++;} // 前后相等，就直接下一个，因为会重复，这个index 从第二个数开始
                 int i = index+1; // 指针头
                 int j = nums.size()-1; //指针尾
                 while(i < j){
